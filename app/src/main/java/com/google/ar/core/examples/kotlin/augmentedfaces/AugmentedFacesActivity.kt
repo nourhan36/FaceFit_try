@@ -12,7 +12,7 @@ import com.google.ar.core.ArCoreApk.InstallStatus
 import com.google.ar.core.AugmentedFace
 import com.google.ar.core.CameraConfig
 import com.google.ar.core.CameraConfigFilter
-import com.googlde.ar.core.Config
+import com.google.ar.core.Config
 import com.google.ar.core.Config.AugmentedFaceMode
 import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
