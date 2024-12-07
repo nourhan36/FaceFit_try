@@ -196,59 +196,63 @@ class AugmentedFacesActivity : AppCompatActivity(), GLSurfaceView.Renderer {
         GLES20.glViewport(0, 0, width, height)
     }
 
-    override fun onDrawFrame(gl: GL10) {
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT or GLES20.GL_DEPTH_BUFFER_BIT)
+   override fun onDrawFrame(gl: GL10) {
+    GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT or GLES20.GL_DEPTH_BUFFER_BIT)
 
-        if (session == null) {
-            return
-        }
-
-        displayRotationHelper!!.updateSessionIfNeeded(session!!)
-
-        try {
-            session!!.setCameraTextureName(backgroundRenderer.textureId)
-            val frame = session!!.update()
-            val camera = frame.camera
-
-            val projectionMatrix = FloatArray(16)
-            camera.getProjectionMatrix(projectionMatrix, 0, 0.1f, 100.0f)
-
-            val viewMatrix = FloatArray(16)
-            camera.getViewMatrix(viewMatrix, 0)
-
-            val colorCorrectionRgba = FloatArray(4)
-            frame.lightEstimate.getColorCorrection(colorCorrectionRgba, 0)
-
-            backgroundRenderer.draw(frame)
-            trackingStateHelper.updateKeepScreenOnFlag(camera.trackingState)
-
-            val faces = session!!.getAllTrackables(AugmentedFace::class.java)
-            for (face in faces) {
-                if (face.trackingState != TrackingState.TRACKING) {
-                    break
-                }
-
-                val scaleFactor = 1.0f
-                GLES20.glDepthMask(false)
-
-                val modelMatrix = FloatArray(16)
-                face.centerPose.toMatrix(modelMatrix, 0)
-                augmentedFaceRenderer.draw(projectionMatrix, viewMatrix, modelMatrix, colorCorrectionRgba, face)
-
-                face.getRegionPose(AugmentedFace.RegionType.NOSE_TIP).toMatrix(glassesMatrix, 0)
-
-                // Apply translation to move the glasses up
-                Matrix.translateM(glassesMatrix, 0, 0.0f, 0.05f, 0.0f) // Adjust the second parameter to move up
-
-                glassesObject.updateModelMatrix(glassesMatrix, scaleFactor)
-                glassesObject.draw(viewMatrix, projectionMatrix, colorCorrectionRgba, DEFAULT_COLOR)
-            }
-        } catch (t: Throwable) {
-            Log.e(TAG, "Exception on the OpenGL thread", t)
-        } finally {
-            GLES20.glDepthMask(true)
-        }
+    if (session == null) {
+        return
     }
+
+    displayRotationHelper!!.updateSessionIfNeeded(session!!)
+
+    try {
+        session!!.setCameraTextureName(backgroundRenderer.textureId)
+        val frame = session!!.update()
+        val camera = frame.camera
+
+        val projectionMatrix = FloatArray(16)
+        camera.getProjectionMatrix(projectionMatrix, 0, 0.1f, 100.0f)
+
+        val viewMatrix = FloatArray(16)
+        camera.getViewMatrix(viewMatrix, 0)
+
+        val colorCorrectionRgba = FloatArray(4)
+        frame.lightEstimate.getColorCorrection(colorCorrectionRgba, 0)
+
+        backgroundRenderer.draw(frame)
+        trackingStateHelper.updateKeepScreenOnFlag(camera.trackingState)
+
+        val faces = session!!.getAllTrackables(AugmentedFace::class.java)
+        for (face in faces) {
+            if (face.trackingState != TrackingState.TRACKING) {
+                break
+            }
+
+            val scaleFactor = 1.0f
+            GLES20.glDepthMask(false)
+
+            val modelMatrix = FloatArray(16)
+            face.centerPose.toMatrix(modelMatrix, 0)
+            augmentedFaceRenderer.draw(projectionMatrix, viewMatrix, modelMatrix, colorCorrectionRgba, face)
+
+            face.getRegionPose(AugmentedFace.RegionType.NOSE_TIP).toMatrix(glassesMatrix, 0)
+
+
+
+            // Apply translation to move the glasses up
+            Matrix.translateM(glassesMatrix, 0, 0.0f, 0.03f, -0.1f)
+            // Apply scaling to increase the width of the glasses
+            Matrix.scaleM(glassesMatrix, 0, 1.25f, 1.2f, 1.0f)
+
+            glassesObject.updateModelMatrix(glassesMatrix, scaleFactor)
+            glassesObject.draw(viewMatrix, projectionMatrix, colorCorrectionRgba, DEFAULT_COLOR)
+        }
+    } catch (t: Throwable) {
+        Log.e(TAG, "Exception on the OpenGL thread", t)
+    } finally {
+        GLES20.glDepthMask(true)
+    }
+}
 
     private fun configureSession() {
         val config = Config(session)
