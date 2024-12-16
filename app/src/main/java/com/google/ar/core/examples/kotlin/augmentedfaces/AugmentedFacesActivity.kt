@@ -3,10 +3,13 @@ package com.google.ar.core.examples.kotlin.augmentedfaces
 
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
+import android.opengl.Matrix
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import com.google.ar.core.ArCoreApk
 import com.google.ar.core.ArCoreApk.InstallStatus
 import com.google.ar.core.AugmentedFace
@@ -37,7 +40,6 @@ import java.io.IOException
 import java.util.EnumSet
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
-import android.opengl.Matrix
 
 class AugmentedFacesActivity : AppCompatActivity(), GLSurfaceView.Renderer {
 
@@ -54,11 +56,31 @@ class AugmentedFacesActivity : AppCompatActivity(), GLSurfaceView.Renderer {
 
     private val glassesMatrix = FloatArray(16)
 
+    private lateinit var frameObject: ObjectRenderer
+    private lateinit var lensesObject: ObjectRenderer
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         surfaceView = findViewById(R.id.surfaceview)
         displayRotationHelper = DisplayRotationHelper(this)
+
+        val blackButton: Button = findViewById(R.id.black_button)
+        val blueButton: Button = findViewById(R.id.blue_button)
+        val redButton: Button = findViewById(R.id.red_button)
+
+        blackButton.setOnClickListener {
+            updateFrameTexture("models/img_7.png")
+        }
+
+        blueButton.setOnClickListener {
+            updateFrameTexture("models/img_8.png")
+        }
+
+        redButton.setOnClickListener {
+            updateFrameTexture("models/texture.png")
+        }
+
 
         surfaceView?.let {
             it.preserveEGLContextOnPause = true
@@ -71,6 +93,20 @@ class AugmentedFacesActivity : AppCompatActivity(), GLSurfaceView.Renderer {
 
         installRequested = false
     }
+
+    private fun updateFrameTexture(texturePath: String) {
+        surfaceView?.queueEvent {
+            try {
+                // Load the new texture for the frame object
+                frameObject.createOnGlThread(this, "models/frame.obj", texturePath)
+                frameObject.setMaterialProperties(0.0f, 1.0f, 0.1f, 6.0f)
+                frameObject.setBlendMode(ObjectRenderer.BlendMode.AlphaBlending)
+            } catch (e: IOException) {
+                Log.e(TAG, "Failed to load texture", e)
+            }
+        }
+    }
+
 
     override fun onDestroy() {
         session?.close()
@@ -174,7 +210,7 @@ class AugmentedFacesActivity : AppCompatActivity(), GLSurfaceView.Renderer {
         setFullScreenOnWindowFocusChanged(this, hasFocus)
     }
 
-    override fun onSurfaceCreated(gl: GL10, config: EGLConfig) {
+    override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         GLES20.glClearColor(0.1f, 0.1f, 0.1f, 1.0f)
 
         try {
@@ -182,10 +218,27 @@ class AugmentedFacesActivity : AppCompatActivity(), GLSurfaceView.Renderer {
             augmentedFaceRenderer.createOnGlThread(this, "models/te.png")
             augmentedFaceRenderer.setMaterialProperties(0.0f, 1.0f, 0.1f, 6.0f)
 
-            glassesObject = ObjectRenderer()
-            glassesObject.createOnGlThread(this, "models/Glasses.obj", "models/R.png")
-            glassesObject.setMaterialProperties(0.0f, 1.0f, 0.1f, 6.0f)
-            glassesObject.setBlendMode(ObjectRenderer.BlendMode.AlphaBlending)
+            // Load the frame object
+            val frameObject = ObjectRenderer()
+            frameObject.createOnGlThread(this, "models/frame.obj", "models/texture.png")
+            frameObject.setMaterialProperties(0.0f, 1.0f, 0.1f, 6.0f)
+            frameObject.setBlendMode(ObjectRenderer.BlendMode.AlphaBlending)
+
+            // Load the lenses object
+            val lensesObject = ObjectRenderer()
+            lensesObject.createOnGlThread(this, "models/lenses.obj", "models/te.png")
+            lensesObject.setMaterialProperties(0.0f, 0.0f, 0.0f, 0.2f)
+            lensesObject.setBlendMode(ObjectRenderer.BlendMode.AlphaBlending)
+
+            // Assign to class variables
+            this.frameObject = frameObject
+            this.lensesObject = lensesObject
+
+            val error = GLES20.glGetError()
+            if (error != GLES20.GL_NO_ERROR) {
+                Log.e(TAG, "OpenGL Error: $error")
+            }
+
         } catch (e: IOException) {
             Log.e(TAG, "Failed to read an asset file", e)
         }
@@ -196,63 +249,64 @@ class AugmentedFacesActivity : AppCompatActivity(), GLSurfaceView.Renderer {
         GLES20.glViewport(0, 0, width, height)
     }
 
-   override fun onDrawFrame(gl: GL10) {
-    GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT or GLES20.GL_DEPTH_BUFFER_BIT)
+    override fun onDrawFrame(gl: GL10) {
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT or GLES20.GL_DEPTH_BUFFER_BIT)
 
-    if (session == null) {
-        return
-    }
-
-    displayRotationHelper!!.updateSessionIfNeeded(session!!)
-
-    try {
-        session!!.setCameraTextureName(backgroundRenderer.textureId)
-        val frame = session!!.update()
-        val camera = frame.camera
-
-        val projectionMatrix = FloatArray(16)
-        camera.getProjectionMatrix(projectionMatrix, 0, 0.1f, 100.0f)
-
-        val viewMatrix = FloatArray(16)
-        camera.getViewMatrix(viewMatrix, 0)
-
-        val colorCorrectionRgba = FloatArray(4)
-        frame.lightEstimate.getColorCorrection(colorCorrectionRgba, 0)
-
-        backgroundRenderer.draw(frame)
-        trackingStateHelper.updateKeepScreenOnFlag(camera.trackingState)
-
-        val faces = session!!.getAllTrackables(AugmentedFace::class.java)
-        for (face in faces) {
-            if (face.trackingState != TrackingState.TRACKING) {
-                break
-            }
-
-            val scaleFactor = 1.0f
-            GLES20.glDepthMask(false)
-
-            val modelMatrix = FloatArray(16)
-            face.centerPose.toMatrix(modelMatrix, 0)
-            augmentedFaceRenderer.draw(projectionMatrix, viewMatrix, modelMatrix, colorCorrectionRgba, face)
-
-            face.getRegionPose(AugmentedFace.RegionType.NOSE_TIP).toMatrix(glassesMatrix, 0)
-
-
-
-            // Apply translation to move the glasses up
-            Matrix.translateM(glassesMatrix, 0, 0.0f, 0.03f, -0.1f)
-            // Apply scaling to increase the width of the glasses
-            Matrix.scaleM(glassesMatrix, 0, 1.25f, 1.2f, 1.0f)
-
-            glassesObject.updateModelMatrix(glassesMatrix, scaleFactor)
-            glassesObject.draw(viewMatrix, projectionMatrix, colorCorrectionRgba, DEFAULT_COLOR)
+        if (session == null) {
+            return
         }
-    } catch (t: Throwable) {
-        Log.e(TAG, "Exception on the OpenGL thread", t)
-    } finally {
-        GLES20.glDepthMask(true)
+
+        displayRotationHelper!!.updateSessionIfNeeded(session!!)
+
+        try {
+            session!!.setCameraTextureName(backgroundRenderer.textureId)
+            val frame = session!!.update()
+            val camera = frame.camera
+
+            val projectionMatrix = FloatArray(16)
+            camera.getProjectionMatrix(projectionMatrix, 0, 0.1f, 100.0f)
+
+            val viewMatrix = FloatArray(16)
+            camera.getViewMatrix(viewMatrix, 0)
+
+            val colorCorrectionRgba = FloatArray(4)
+            frame.lightEstimate.getColorCorrection(colorCorrectionRgba, 0)
+
+            backgroundRenderer.draw(frame)
+            trackingStateHelper.updateKeepScreenOnFlag(camera.trackingState)
+
+            val faces = session!!.getAllTrackables(AugmentedFace::class.java)
+            for (face in faces) {
+                if (face.trackingState != TrackingState.TRACKING) {
+                    break
+                }
+
+                val scaleFactor = 1.0f
+                GLES20.glDepthMask(false)
+
+                val modelMatrix = FloatArray(16)
+                face.centerPose.toMatrix(modelMatrix, 0)
+                augmentedFaceRenderer.draw(projectionMatrix, viewMatrix, modelMatrix, colorCorrectionRgba, face)
+
+                face.getRegionPose(AugmentedFace.RegionType.NOSE_TIP).toMatrix(glassesMatrix, 0)
+
+                // Draw the frame
+                frameObject.updateModelMatrix(glassesMatrix, scaleFactor)
+                frameObject.draw(viewMatrix, projectionMatrix, colorCorrectionRgba, DEFAULT_COLOR)
+
+                // Draw the lenses
+                lensesObject.updateModelMatrix(glassesMatrix, scaleFactor)
+                lensesObject.draw(viewMatrix, projectionMatrix, colorCorrectionRgba, DEFAULT_COLOR)
+            }
+        } catch (t: Throwable) {
+            Log.e(TAG, "Exception on the OpenGL thread", t)
+        } finally {
+            GLES20.glDepthMask(true)
+        }
     }
-}
+
+
+
 
     private fun configureSession() {
         val config = Config(session)
