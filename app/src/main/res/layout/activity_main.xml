@@ -22,33 +22,48 @@
       android:id="@+id/surfaceview"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
-      android:layout_gravity="top"/>
+      android:layout_gravity="top" />
 
   <LinearLayout
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
-      android:layout_centerHorizontal="true"
+      android:layout_marginStart="16dp"
+      android:layout_marginEnd="16dp"
       android:orientation="horizontal"
-      android:padding="16dp">
+      android:gravity="center"
+      android:padding="16dp"
+      android:background="@drawable/rounded_white_background">
 
     <Button
         android:id="@+id/black_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Black" />
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@android:color/black"
+        android:elevation="4dp"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <Button
         android:id="@+id/blue_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Blue" />
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="#0623BD"
+        android:elevation="4dp"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <Button
-        android:id="@+id/red_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Red" />
+        android:id="@+id/grey_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@android:color/darker_gray"
+        android:elevation="4dp"
+        tools:ignore="SpeakableTextPresentCheck" />
 
   </LinearLayout>
 </RelativeLayout>

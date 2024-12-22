@@ -3,13 +3,11 @@ package com.google.ar.core.examples.kotlin.augmentedfaces
 
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
-import android.opengl.Matrix
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
 import com.google.ar.core.ArCoreApk
 import com.google.ar.core.ArCoreApk.InstallStatus
 import com.google.ar.core.AugmentedFace
@@ -58,6 +56,11 @@ class AugmentedFacesActivity : AppCompatActivity(), GLSurfaceView.Renderer {
 
     private lateinit var frameObject: ObjectRenderer
     private lateinit var lensesObject: ObjectRenderer
+    private lateinit var armsObject: ObjectRenderer
+
+    private lateinit var frame: String
+    private lateinit var lens: String
+    private lateinit var arms: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,21 +68,30 @@ class AugmentedFacesActivity : AppCompatActivity(), GLSurfaceView.Renderer {
         surfaceView = findViewById(R.id.surfaceview)
         displayRotationHelper = DisplayRotationHelper(this)
 
+        frame = intent.getStringExtra("FRAME_PATH") ?: "models/lensesFrame.obj"
+        lens = intent.getStringExtra("LENSES_PATH") ?: "models/lenses.obj"
+        arms = intent.getStringExtra("ARMS_PATH") ?: "models/arms.obj"
+
+
         val blackButton: Button = findViewById(R.id.black_button)
         val blueButton: Button = findViewById(R.id.blue_button)
-        val redButton: Button = findViewById(R.id.red_button)
+        val greyButton: Button = findViewById(R.id.grey_button)
 
         blackButton.setOnClickListener {
-            updateFrameTexture("models/img_7.png")
+            updateFrameTexture("models/black.png")
+            updateArmsTexture("models/black.png")
         }
 
         blueButton.setOnClickListener {
-            updateFrameTexture("models/img_8.png")
+            updateFrameTexture("models/blue.png")
+            updateArmsTexture("models/blue.png")
         }
 
-        redButton.setOnClickListener {
-            updateFrameTexture("models/texture.png")
+        greyButton.setOnClickListener {
+            updateFrameTexture("models/grey.png")
+            updateArmsTexture("models/grey.png")
         }
+
 
 
         surfaceView?.let {
@@ -98,7 +110,7 @@ class AugmentedFacesActivity : AppCompatActivity(), GLSurfaceView.Renderer {
         surfaceView?.queueEvent {
             try {
                 // Load the new texture for the frame object
-                frameObject.createOnGlThread(this, "models/frame.obj", texturePath)
+                frameObject.createOnGlThread(this, frame, texturePath)
                 frameObject.setMaterialProperties(0.0f, 1.0f, 0.1f, 6.0f)
                 frameObject.setBlendMode(ObjectRenderer.BlendMode.AlphaBlending)
             } catch (e: IOException) {
@@ -106,6 +118,20 @@ class AugmentedFacesActivity : AppCompatActivity(), GLSurfaceView.Renderer {
             }
         }
     }
+
+    private fun updateArmsTexture(texturePath: String) {
+        surfaceView?.queueEvent {
+            try {
+                // Load the new texture for the frame object
+                armsObject.createOnGlThread(this, arms, texturePath)
+                armsObject.setMaterialProperties(0.0f, 1.0f, 0.1f, 6.0f)
+                armsObject.setBlendMode(ObjectRenderer.BlendMode.AlphaBlending)
+            } catch (e: IOException) {
+                Log.e(TAG, "Failed to load texture", e)
+            }
+        }
+    }
+
 
 
     override fun onDestroy() {
@@ -215,24 +241,30 @@ class AugmentedFacesActivity : AppCompatActivity(), GLSurfaceView.Renderer {
 
         try {
             backgroundRenderer.createOnGlThread(this)
-            augmentedFaceRenderer.createOnGlThread(this, "models/te.png")
+            augmentedFaceRenderer.createOnGlThread(this, "models/transparent.png")
             augmentedFaceRenderer.setMaterialProperties(0.0f, 1.0f, 0.1f, 6.0f)
 
             // Load the frame object
             val frameObject = ObjectRenderer()
-            frameObject.createOnGlThread(this, "models/frame.obj", "models/texture.png")
+            frameObject.createOnGlThread(this, frame, "models/black.png")
             frameObject.setMaterialProperties(0.0f, 1.0f, 0.1f, 6.0f)
             frameObject.setBlendMode(ObjectRenderer.BlendMode.AlphaBlending)
 
             // Load the lenses object
             val lensesObject = ObjectRenderer()
-            lensesObject.createOnGlThread(this, "models/lenses.obj", "models/te.png")
+            lensesObject.createOnGlThread(this, lens, "models/transparent.png")
             lensesObject.setMaterialProperties(0.0f, 0.0f, 0.0f, 0.2f)
             lensesObject.setBlendMode(ObjectRenderer.BlendMode.AlphaBlending)
+
+            val armsObject = ObjectRenderer()
+            armsObject.createOnGlThread(this, arms, "models/black.png")
+            armsObject.setMaterialProperties(0.0f, 0.0f, 0.0f, 0.2f)
+            armsObject.setBlendMode(ObjectRenderer.BlendMode.AlphaBlending)
 
             // Assign to class variables
             this.frameObject = frameObject
             this.lensesObject = lensesObject
+            this.armsObject = armsObject
 
             val error = GLES20.glGetError()
             if (error != GLES20.GL_NO_ERROR) {
@@ -297,6 +329,9 @@ class AugmentedFacesActivity : AppCompatActivity(), GLSurfaceView.Renderer {
                 // Draw the lenses
                 lensesObject.updateModelMatrix(glassesMatrix, scaleFactor)
                 lensesObject.draw(viewMatrix, projectionMatrix, colorCorrectionRgba, DEFAULT_COLOR)
+
+                armsObject.updateModelMatrix(glassesMatrix, scaleFactor)
+                armsObject.draw(viewMatrix, projectionMatrix, colorCorrectionRgba, DEFAULT_COLOR)
             }
         } catch (t: Throwable) {
             Log.e(TAG, "Exception on the OpenGL thread", t)

@@ -23,6 +23,13 @@
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.NoActionBar">
+
+        </activity>
+
+        <activity
+            android:name="com.google.ar.core.examples.kotlin.augmentedfaces.ProductsActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

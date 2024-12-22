@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F9F9F9"
+    android:padding="16dp">
+
+    <GridLayout
+        android:id="@+id/grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:rowCount="3"
+        android:padding="8dp"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:columnOrderPreserved="true">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:orientation="vertical"
+            android:background="@drawable/item_background"
+            android:padding="8dp"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_launcher" />
+
+            <Button
+                android:id="@+id/try_on_button1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Try ON"
+                android:textAllCaps="false"
+                android:background="@drawable/button_background"
+                android:textColor="#304FFE"
+                android:layout_marginTop="8dp" />
+
+            <!-- Glasses Name -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Browline Glasses"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:layout_marginTop="8dp" />
+
+            <!-- Colors -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="#FFC107"
+                    android:background="@drawable/color_circle" />
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="#4CAF50"
+                    android:background="@drawable/color_circle" />
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="#03A9F4"
+                    android:background="@drawable/color_circle" />
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:backgroundTint="#000000"
+                    android:background="@drawable/color_circle" />
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:orientation="vertical"
+            android:background="@drawable/item_background"
+            android:padding="8dp"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_launcher" />
+
+            <Button
+                android:id="@+id/try_on_button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Try ON"
+                android:textAllCaps="false"
+                android:background="@drawable/button_background"
+                android:textColor="#304FFE"
+                android:layout_marginTop="8dp" />
+
+            <!-- Glasses Name -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Browline Glasses"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:layout_marginTop="8dp" />
+
+            <!-- Colors -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="#FFC107"
+                    android:background="@drawable/color_circle" />
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="#4CAF50"
+                    android:background="@drawable/color_circle" />
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="#03A9F4"
+                    android:background="@drawable/color_circle" />
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:backgroundTint="#000000"
+                    android:background="@drawable/color_circle" />
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:orientation="vertical"
+            android:background="@drawable/item_background"
+            android:padding="8dp"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_launcher" />
+
+            <Button
+                android:id="@+id/try_on_button3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Try ON"
+                android:textAllCaps="false"
+                android:background="@drawable/button_background"
+                android:textColor="#304FFE"
+                android:layout_marginTop="8dp" />
+
+            <!-- Glasses Name -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Browline Glasses"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:layout_marginTop="8dp" />
+
+            <!-- Colors -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="#FFC107"
+                    android:background="@drawable/color_circle" />
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="#4CAF50"
+                    android:background="@drawable/color_circle" />
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="#03A9F4"
+                    android:background="@drawable/color_circle" />
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:backgroundTint="#000000"
+                    android:background="@drawable/color_circle" />
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:orientation="vertical"
+            android:background="@drawable/item_background"
+            android:padding="8dp"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_launcher" />
+
+            <Button
+                android:id="@+id/try_on_button4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Try ON"
+                android:textAllCaps="false"
+                android:background="@drawable/button_background"
+                android:textColor="#304FFE"
+                android:layout_marginTop="8dp" />
+
+            <!-- Glasses Name -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Browline Glasses"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:layout_marginTop="8dp" />
+
+            <!-- Colors -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="#FFC107"
+                    android:background="@drawable/color_circle" />
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="#4CAF50"
+                    android:background="@drawable/color_circle" />
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="#03A9F4"
+                    android:background="@drawable/color_circle" />
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:backgroundTint="#000000"
+                    android:background="@drawable/color_circle" />
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:orientation="vertical"
+            android:background="@drawable/item_background"
+            android:padding="8dp"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_launcher" />
+
+            <Button
+                android:id="@+id/try_on_button5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Try ON"
+                android:textAllCaps="false"
+                android:background="@drawable/button_background"
+                android:textColor="#304FFE"
+                android:layout_marginTop="8dp" />
+
+            <!-- Glasses Name -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Browline Glasses"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:layout_marginTop="8dp" />
+
+            <!-- Colors -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="#FFC107"
+                    android:background="@drawable/color_circle" />
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="#4CAF50"
+                    android:background="@drawable/color_circle" />
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="#03A9F4"
+                    android:background="@drawable/color_circle" />
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:backgroundTint="#000000"
+                    android:background="@drawable/color_circle" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </GridLayout>
+</ScrollView>
